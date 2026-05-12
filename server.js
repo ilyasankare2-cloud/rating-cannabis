@@ -4,7 +4,6 @@ import { GoogleGenAI } from '@google/genai';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
@@ -17,11 +16,6 @@ app.set('trust proxy', 1);
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
-
-const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-if (!apiKey) {
-  console.error('ERROR: GEMINI_API_KEY no configurada en el servidor.');
-}
 
 const ai = new GoogleGenAI({ apiKey });
 
@@ -85,7 +79,7 @@ const analyzeLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.post('/api/analyze', analyzeLimiter, async (req, res) => {
+app.post('/api/analyze', async (req, res) => {
   try {
     const { image, prompt } = req.body;
     if (!image) return res.status(400).json({ error: 'No image provided' });
