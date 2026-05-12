@@ -328,14 +328,13 @@ export default function App() {
         setResult(resObj);
         addToHistory(resObj, image);
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       clearTimeout(timeoutId);
-      if (err instanceof DOMException && err.name === 'AbortError') {
+      if (err?.name === 'AbortError') {
         setError('La solicitud tardó demasiado. Intenta con una imagen más pequeña o vuelve a intentarlo.');
       } else {
-        const message = err instanceof Error ? err.message : 'Error desconocido';
         console.error(err);
-        setError(message || 'Error al comunicarse con el servidor.');
+        setError(err?.message || 'Error al comunicarse con el servidor.');
       }
     } finally {
       setIsAnalyzing(false);
